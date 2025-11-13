@@ -24,3 +24,18 @@ def eventos_view(request):
         return render(request, 'app_eventos/eventos.html', {'eventos': eventos})
     else:
         return redirect('login')
+
+from django.http import JsonResponse
+import os
+from django.core.files.storage import default_storage
+from django.conf import settings
+
+
+def __debug_storage__(request):
+    return JsonResponse({
+        "CLOUDINARY_URL_exists": bool(os.getenv("CLOUDINARY_URL")),
+        "CLOUDINARY_URL_preview": (os.getenv("CLOUDINARY_URL")[:12] + "...") if os.getenv("CLOUDINARY_URL") else None,
+        "DEBUG": getattr(settings, "DEBUG", None),
+        "DEFAULT_FILE_STORAGE": getattr(settings, "DEFAULT_FILE_STORAGE", None),
+        "default_storage_class": default_storage.__class__.__module__ + "." + default_storage.__class__.__name__,
+    })
